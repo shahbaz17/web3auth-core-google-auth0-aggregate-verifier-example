@@ -49,7 +49,8 @@ function App() {
                 verifier: "w3a-google-github",
                 verifierSubIdentifier: "w3a-google",
                 typeOfLogin: "google",
-                clientId: "774338308167-q463s7kpvja16l4l0kko3nb925ikds2p.apps.googleusercontent.com",
+                clientId:
+                  "774338308167-q463s7kpvja16l4l0kko3nb925ikds2p.apps.googleusercontent.com",
               },
               jwt: {
                 verifier: "w3a-google-github",
@@ -128,6 +129,16 @@ function App() {
     setProvider(null);
   };
 
+  const getPrivateKey = async () => {
+    if (!provider) {
+      uiConsole("provider not initialized yet");
+      return;
+    }
+    const rpc = new RPC(provider);
+    const privateKey = await rpc.getPrivateKey();
+    uiConsole(privateKey);
+  };
+
   const getAccounts = async () => {
     if (!provider) {
       uiConsole("provider not initialized yet");
@@ -204,6 +215,11 @@ function App() {
           </button>
         </div>
         <div>
+          <button onClick={getPrivateKey} className="card">
+            Private Key
+          </button>
+        </div>
+        <div>
           <button onClick={logout} className="card">
             Log Out
           </button>
@@ -218,12 +234,12 @@ function App() {
 
   const logoutView = (
     <>
-    <button onClick={loginGoogle} className="card">
-      Login using Google
-    </button>
-    <button onClick={loginAuth0} className="card">
-      Login using Auth0 [ Google, GitHub ]
-    </button>
+      <button onClick={loginGoogle} className="card">
+        Login using Google
+      </button>
+      <button onClick={loginAuth0} className="card">
+        Login using Auth0 [ Google, GitHub ]
+      </button>
     </>
   );
 
