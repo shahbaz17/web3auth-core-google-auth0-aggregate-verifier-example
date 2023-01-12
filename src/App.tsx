@@ -55,21 +55,34 @@ function App() {
             uxMode: "popup",
             loginConfig: {
               google: {
-                verifier: "w3a-google-github",
+                verifier: "agg-google-emailpswd-github",
                 verifierSubIdentifier: "w3a-google",
                 typeOfLogin: "google",
                 clientId:
                   "774338308167-q463s7kpvja16l4l0kko3nb925ikds2p.apps.googleusercontent.com",
               },
-              jwt: {
-                verifier: "w3a-google-github",
+              auth0github: {
+                verifier: "agg-google-emailpswd-github",
                 verifierSubIdentifier: "w3a-github",
                 typeOfLogin: "jwt",
-                clientId: "294QRkchfq2YaXUbPri7D6PH7xzHgQMT",
+                clientId: "TcuxIlWeaexIhVzsyc4sShzHJxwJ7nsO",
                 jwtParameters: {
                   domain: "https://shahbaz-torus.us.auth0.com",
                   // this corresponds to the field inside jwt which must be used to uniquely
                   // identify the user. This is mapped b/w google and github logins
+                  verifierIdField: "email",
+                  isVerifierIdCaseSensitive: false,
+                },
+              },
+              auth0emailpasswordless: {
+                verifier: "agg-google-emailpswd-github",
+                verifierSubIdentifier: "w3a-email-passwordless",
+                typeOfLogin: "jwt",
+                clientId: "QQRQNGxJ80AZ5odiIjt1qqfryPOeDcb1",
+                jwtParameters: {
+                  domain: "https://shahbaz-torus.us.auth0.com",
+                  // this corresponds to the field inside jwt which must be used to uniquely
+                  // identify the user. This is mapped b/w google and email passwordless logins of Auth0
                   verifierIdField: "email",
                   isVerifierIdCaseSensitive: false,
                 },
@@ -106,7 +119,7 @@ function App() {
     setProvider(web3authProvider);
   };
 
-  const loginAuth0 = async () => {
+  const loginAuth0GitHub = async () => {
     if (!web3auth) {
       uiConsole("web3auth not initialized yet");
       return;
@@ -114,7 +127,21 @@ function App() {
     const web3authProvider = await web3auth.connectTo(
       WALLET_ADAPTERS.OPENLOGIN,
       {
-        loginProvider: "jwt",
+        loginProvider: "auth0github",
+      }
+    );
+    setProvider(web3authProvider);
+  };
+
+  const loginAuth0EmailPasswordless = async () => {
+    if (!web3auth) {
+      uiConsole("web3auth not initialized yet");
+      return;
+    }
+    const web3authProvider = await web3auth.connectTo(
+      WALLET_ADAPTERS.OPENLOGIN,
+      {
+        loginProvider: "auth0emailpasswordless",
       }
     );
     setProvider(web3authProvider);
@@ -244,10 +271,13 @@ function App() {
   const logoutView = (
     <>
       <button onClick={loginGoogle} className="card">
-        Login using Google
+        Login using <b>Google</b>
       </button>
-      <button onClick={loginAuth0} className="card">
-        Login using Auth0 [ Google, GitHub ]
+      <button onClick={loginAuth0GitHub} className="card">
+        Login using <b>GitHub</b> [ via Auth0 ]
+      </button>
+      <button onClick={loginAuth0EmailPasswordless} className="card">
+        Login using <b>Email Passwordless</b> [ via Auth0 ]
       </button>
     </>
   );
@@ -258,9 +288,17 @@ function App() {
         <a target="_blank" href="http://web3auth.io/" rel="noreferrer">
           Web3Auth
         </a>{" "}
-        & ReactJS Example
+        Aggregate Verifier Example in React
       </h1>
-      <h3 className="sub-title">Aggregate Verifier - Google & Auth0</h3>
+      <h3 className="sub-title">
+        Aggregate Verifier - Google, Email Passwordless & GitHub
+      </h3>
+
+      <h6 className="center">
+        Logging in with any of the below login methods will return the same
+        wallet address. Provided, you have the same email address for all the
+        logins.
+      </h6>
 
       <div className="grid">{provider ? loginView : logoutView}</div>
 
